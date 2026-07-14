@@ -949,22 +949,126 @@ if(mani){
   });
 }
 
-// Subscribe form
-const subForm=document.getElementById('subForm');
-if(subForm){
-  subForm.addEventListener('submit',e=>{
+<script>
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybwkD6NVovMNTPxI7CTAs9YmYzfKqnv_YVS7mpyOZGwaeTgL3kmJUcVCbY2rlvjhvf/exec";
+
+
+// ======================
+// SUBSCRIBE FORM
+// ======================
+const subForm = document.getElementById("subForm");
+
+if (subForm) {
+
+  subForm.addEventListener("submit", async function(e) {
+
     e.preventDefault();
-    alert('Subscribed. You will receive weekly Guntur market rates.');
-    e.target.reset();
+
+    const email = subForm.querySelector("input[type=email]").value;
+
+    try {
+
+      const res = await fetch(SCRIPT_URL, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+
+        body: JSON.stringify({
+
+          type: "subscriber",
+
+          email: email
+
+        })
+
+      });
+
+      const data = await res.json();
+
+      alert(data.message);
+
+      subForm.reset();
+
+    } catch (err) {
+
+      alert("Subscription Failed");
+
+      console.log(err);
+
+    }
+
   });
+
 }
 
-// Form
-document.getElementById('quoteForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  alert('Quote request received. GEEI will respond within one business day.');
-  e.target.reset();
-});
+
+
+// ======================
+// QUOTE FORM
+// ======================
+const quoteForm = document.getElementById("quoteForm");
+
+if (quoteForm) {
+
+  quoteForm.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const payload = {
+
+      type: "quote",
+
+      name: quoteForm.querySelector("[name=name]").value,
+
+      company: quoteForm.querySelector("[name=company]").value,
+
+      email: quoteForm.querySelector("[name=email]").value,
+
+      variety: quoteForm.querySelector("[name=variety]").value,
+
+      destination: quoteForm.querySelector("[name=destination]").value,
+
+      message: quoteForm.querySelector("[name=message]").value
+
+    };
+
+    try {
+
+      const res = await fetch(SCRIPT_URL, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+
+        body: JSON.stringify(payload)
+
+      });
+
+      const data = await res.json();
+
+      alert(data.message);
+
+      quoteForm.reset();
+
+    } catch (err) {
+
+      alert("Submission Failed");
+
+      console.log(err);
+
+    }
+
+  });
+
+}
+
+</script>
 </script>
 </body>
 </html>
